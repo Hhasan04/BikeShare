@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as npchga
+import numpy as np
 import time
 
 def get_city():
@@ -17,7 +17,6 @@ def get_city():
         except:
             print('Ivalid input, Please try again')
     return city_name
-
 
 def get_time_period():
     
