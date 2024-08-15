@@ -33,8 +33,6 @@ def get_time_period():
             print('Ivalid input, Please try again')
     return time_period
         
-
-
 def get_month(df):
     
     while True:
@@ -48,8 +46,6 @@ def get_month(df):
             print("That's not a valid number. Please try again.")
     df = df[df['month'] == month]
     return df
-    
-
 
 def get_day(df):
     
@@ -115,125 +111,89 @@ def display_data(df, start, end):
 
 
 def statistics():
-    '''Calculates and prints out the descriptive statistics about a city and time period
-    specified by the user via raw input.
-
-    Args:
-        none.
-    Returns:
-        none.
-    '''
     CITY_DATA = { 'chicago': 'chicago.csv',
-              'new york': 'new_york_city.csv',
-              'washington': 'washington.csv' }
-    city = get_city()
+                  'new york': 'new_york_city.csv',
+                  'washington': 'washington.csv' }
     
+    city = get_city()
     df = pd.read_csv(CITY_DATA[city])
     original_df = pd.read_csv(CITY_DATA[city])
     df['Start Time'] = pd.to_datetime(df['Start Time'])
     df['month'] = df['Start Time'].dt.month
     df['day_of_week'] = df['Start Time'].dt.day_name()
     
-  # Filter by time period (month, day, none)
     time_period = get_time_period()
     if time_period == 'month':
         df = get_month(df)
-        print('\nCalculating the first statistic...')
+        print('\nCalculating the most popular day...')
         start_time = time.time()
-
-        print('\nThe most popular day is:',popular_day(df))
-
+        print('\nThe most popular day is:', popular_day(df))
         print("\nThat took %s seconds." % (time.time() - start_time))
-        print("\nCalculating the next statistic...")
 
     elif time_period == 'day':
         df = get_day(df)
-        print('\nCalculating the first statistic...')
+        print('\nCalculating the most popular month...')
         start_time = time.time()
-
-        print('\nThe most popular month is:',popular_month(df))
-
+        print('\nThe most popular month is:', popular_month(df))
         print("\nThat took %s seconds." % (time.time() - start_time))
-        print("\nCalculating the next statistic...")
 
     else:
-        print('\nCalculating the first statistic...')
+        print('\nCalculating the most popular month and day...')
         start_time = time.time()
-
-        print('\nThe most popular month is:',popular_month(df))
-        print('The most popular day is:',popular_day(df)) 
-
+        print('\nThe most popular month is:', popular_month(df))
+        print('The most popular day is:', popular_day(df))
         print("\nThat took %s seconds." % (time.time() - start_time))
-        print("\nCalculating the next statistic...")    
 
+    print("\nCalculating the most popular hour...")
     start_time = time.time()
-
-    print('\nThe most riding hour is:',popular_hour(df))
-
+    print('\nThe most riding hour is:', popular_hour(df))
     print("\nThat took %s seconds." % (time.time() - start_time))
-    print("\nCalculating the next statistic...")
+
+    print("\nCalculating trip durations...")
     start_time = time.time()
-
-    print(f'\nThe total of trip durations is {sum_of_trip_durations(df)} seconds')
-    print(f'The average of trip durations is {avg_of_trip_durations(df)} seconds')
-
+    print(f'\nThe total trip durations is {sum_of_trip_durations(df)} seconds')
+    print(f'The average trip duration is {avg_of_trip_durations(df)} seconds')
     print("\nThat took %s seconds." % (time.time() - start_time))
-    print("\nCalculating the next statistic...")
-    start_time = time.time()
 
-    # What is the most popular start station and most popular end station?
-    # TODO: call popular_stations function and print the results
+    print("\nCalculating the most popular start and end stations...")
+    start_time = time.time()
     print('\nThe most popular start station is:', popular_start_stations(df))
     print('The most popular end station is:', popular_end_stations(df))
-
     print("\nThat took %s seconds." % (time.time() - start_time))
-    print("\nCalculating the next statistic...")
-    start_time = time.time()
 
+    print("\nCalculating the most popular trip...")
+    start_time = time.time()
     most_popular_trip = popular_trip(df)
     print(f"\nMost Popular Trip: Start Station - {most_popular_trip[0]}, End Station - {most_popular_trip[1]}")
-
     print("\nThat took %s seconds." % (time.time() - start_time))
-    print("\nCalculating the next statistic...")
-    start_time = time.time()
 
+    print("\nCalculating user types...")
+    start_time = time.time()
     user_types = users(df)
-    print(f'\nThere is {user_types.iloc[0]} Subscribers and {user_types.iloc[1]} Customers')
-    # TODO: call users function and print the results
-
+    print(f'\nThere are {user_types.iloc[0]} Subscribers and {user_types.iloc[1]} Customers')
     print("\nThat took %s seconds." % (time.time() - start_time))
-    print("\nCalculating the next statistic...")
-    start_time = time.time()
 
     if city != 'washington':
-
         modified_df = df.dropna(axis=0)
-        
-        genders = gender(modified_df)
-        print(f'\nThere is {genders.iloc[0]} Male Trips and {genders.iloc[1]} Females Trips')
-
-
-        print("\nThat took %s seconds." % (time.time() - start_time))
-        print("\nCalculating the next statistic...")
+        print("\nCalculating gender data...")
         start_time = time.time()
+        genders = gender(modified_df)
+        print(f'\nThere are {genders.iloc[0]} Male Trips and {genders.iloc[1]} Female Trips')
+        print("\nThat took %s seconds." % (time.time() - start_time))
 
-        # What are the earliest (i.e. oldest user), most recent (i.e. youngest user), and
-        # most popular birth years?
-        # TODO: call birth_years function and print the results
+        print("\nCalculating birth year data...")
+        start_time = time.time()
         years = birth_years(modified_df)
-        print(f'\nThe oldes subscriber was born in {years[0]} and the youngest was born in {years[1]}.\nthe most popular birth year is {years[2]}')
-
+        print(f'\nThe oldest subscriber was born in {years[0]} and the youngest was born in {years[1]}. The most popular birth year is {years[2]}')
         print("\nThat took %s seconds." % (time.time() - start_time))
     else:
-        print('\nSorry, There is no data available about the Gender and birth year for washington city')
+        print('\nSorry, there is no data available about Gender and birth year for Washington city')
 
-    # Display five lines of data at a time if user specifies that they would like to
     start = 0
     end = 5
     while True:
         try:            
-            display = input('\nWould you like to view individual trip data?'
-                    '\nType \'yes\' to show or anything else for no.\n').lower()
+            display = input('\nWould you like to view individual trip data?\nType \'yes\' to show or anything else for no.\n').lower()
             if display == 'yes':                
                 display_data(df, start, end)
                 start += 5
@@ -241,13 +201,11 @@ def statistics():
             else:
                 break
         except:
-            print('Ivalid input, Please try again')
+            print('Invalid input, Please try again')
 
-    # Restart?
     restart = input('\nWould you like to restart? Type \'yes\' to restart or anything else for no.\n').lower()
-    if restart.lower() == 'yes':
+    if restart == 'yes':
         statistics()
 
-
 if __name__ == "__main__":
-	statistics()
+    statistics()
