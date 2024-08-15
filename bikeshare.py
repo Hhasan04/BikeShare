@@ -1,11 +1,12 @@
 import pandas as pd
-import numpy as npchga
+import numpy as np
 import time
 
+# Filters the data according to the city file
 def get_city():
-    
     valid_cities = ["chicago", "new york", "washington"]
-
+    
+    # Prompt user to select a city
     while True:
         try:
             city_name = input('\nHello! Let\'s explore some US bikeshare data!\n'
@@ -15,33 +16,33 @@ def get_city():
             else:
                 print("Invalid city. Please try again.\n")
         except:
-            print('Ivalid input, Please try again')
+            print('Invalid input, please try again.')
     return city_name
 
-
+# Let the user decide how they want to filter the data
 def get_time_period():
-    
     valid_choice = ["month", "day", "none"]
+    
+    # Prompt user to choose a time filter (month, day, or none)
     while True:
         try:
             time_period = input('\nWould you like to filter the data by month, day, or not at'
                             ' all? Type "none" for no time filter.\n').lower()
             if time_period in valid_choice:
-             break
+                break
             else:
-                print('Invalid Choice. Please try again.\n')
+                print('Invalid choice. Please try again.\n')
         except:
-            print('Ivalid input, Please try again')
+            print('Invalid input, please try again.')
     return time_period
-        
 
-
+# Filters data by a specific month
 def get_month(df):
-    
     while True:
         try:
+            # Prompt user to select a month
             month = int(input('\nWhich month? Please type your response as an integer (January = 1, February = 2, ..., June = 6).\n'))
-            if 1 <= month <= 12:
+            if 1 <= month <= 6:
                 break
             else:
                 print("The number is out of range. Please try again.")
@@ -49,71 +50,76 @@ def get_month(df):
             print("That's not a valid number. Please try again.")
     df = df[df['month'] == month]
     return df
-    
 
-
+# Filters data by a specific day of the week
 def get_day(df):
+    days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     
-    days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
+    # Prompt user to select a day of the week
     while True:
         day = input('\nWhich day? Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday\n').lower()
         if day in days:
             break
         else:
-            print('invalid day name Please enter a day name')
+            print('Invalid day name. Please enter a valid day name.')
     df = df[df['day_of_week'] == day.title()]
     return df
 
-
+# Calculates the most popular month
 def popular_month(df):
     months_dict = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June'}
     return months_dict[df['month'].mode()[0]]
 
+# Calculates the most popular day of the week
 def popular_day(df):
     return df['day_of_week'].mode()[0]
 
-
+# Calculates the most popular hour of the day for starting trips
 def popular_hour(df):
     df['hour'] = df['Start Time'].dt.hour
     return df['hour'].mode()[0]
 
+# Calculates the total trip duration
 def sum_of_trip_durations(df):
     return df['Trip Duration'].sum()
 
+# Calculates the average trip duration
 def avg_of_trip_durations(df):
     return df['Trip Duration'].mean()
 
+# Determines the most popular start station
 def popular_start_stations(df):
     return df['Start Station'].mode()[0]
 
+# Determines the most popular end station
 def popular_end_stations(df):
     return df['End Station'].mode()[0]
 
+# Determines the most popular trip (from start station to end station)
 def popular_trip(df):
-
     most_popular_trip = df[['Start Station', 'End Station']].mode().iloc[0]
-
     return (most_popular_trip['Start Station'], most_popular_trip['End Station'])
 
-
+# Counts the number of users by type
 def users(df):
     user_count = df['User Type'].value_counts()
     return user_count
 
+# Counts the number of users by gender (if available)
 def gender(df):
     gender_count = df['Gender'].value_counts()
     return gender_count
 
+# Determines the earliest, most recent, and most common birth years (if available)
 def birth_years(df):
     return (df['Birth Year'].min(), df['Birth Year'].max(), df['Birth Year'].mode()[0])
 
+# Displays rows of data in increments of 5
 def display_data(df, start, end):
     try:
-        
         print(df[start:end])
     except StopIteration:
         print("No more data to display.")
-
 
 def statistics():
     '''Calculates and prints out the descriptive statistics about a city and time period
