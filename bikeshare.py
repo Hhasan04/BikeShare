@@ -121,34 +121,31 @@ def display_data(df, start, end):
     except StopIteration:
         print("No more data to display.")
 
+# Main function to calculate and display statistics based on user input
 def statistics():
-    '''Calculates and prints out the descriptive statistics about a city and time period
-    specified by the user via raw input.
-
-    Args:
-        none.
-    Returns:
-        none.
-    '''
     CITY_DATA = { 'chicago': 'chicago.csv',
               'new york': 'new_york_city.csv',
               'washington': 'washington.csv' }
+    
+    # Get the city the user wants to explore
     city = get_city()
     
+    # Load data for the selected city
     df = pd.read_csv(CITY_DATA[city])
-    original_df = pd.read_csv(CITY_DATA[city])
     df['Start Time'] = pd.to_datetime(df['Start Time'])
     df['month'] = df['Start Time'].dt.month
     df['day_of_week'] = df['Start Time'].dt.day_name()
     
-  # Filter by time period (month, day, none)
+    # Filter by time period (month, day, none)
     time_period = get_time_period()
+    
+    # Apply the chosen filter and calculate statistics
     if time_period == 'month':
         df = get_month(df)
         print('\nCalculating the first statistic...')
         start_time = time.time()
 
-        print('\nThe most popular day is:',popular_day(df))
+        print('\nThe most popular day is:', popular_day(df))
 
         print("\nThat took %s seconds." % (time.time() - start_time))
         print("\nCalculating the next statistic...")
@@ -158,7 +155,7 @@ def statistics():
         print('\nCalculating the first statistic...')
         start_time = time.time()
 
-        print('\nThe most popular month is:',popular_month(df))
+        print('\nThe most popular month is:', popular_month(df))
 
         print("\nThat took %s seconds." % (time.time() - start_time))
         print("\nCalculating the next statistic...")
@@ -167,15 +164,15 @@ def statistics():
         print('\nCalculating the first statistic...')
         start_time = time.time()
 
-        print('\nThe most popular month is:',popular_month(df))
-        print('The most popular day is:',popular_day(df)) 
+        print('\nThe most popular month is:', popular_month(df))
+        print('The most popular day is:', popular_day(df)) 
 
         print("\nThat took %s seconds." % (time.time() - start_time))
         print("\nCalculating the next statistic...")    
 
     start_time = time.time()
 
-    print('\nThe most riding hour is:',popular_hour(df))
+    print('\nThe most riding hour is:', popular_hour(df))
 
     print("\nThat took %s seconds." % (time.time() - start_time))
     print("\nCalculating the next statistic...")
@@ -189,7 +186,6 @@ def statistics():
     start_time = time.time()
 
     # What is the most popular start station and most popular end station?
-    # TODO: call popular_stations function and print the results
     print('\nThe most popular start station is:', popular_start_stations(df))
     print('The most popular end station is:', popular_end_stations(df))
 
@@ -197,6 +193,7 @@ def statistics():
     print("\nCalculating the next statistic...")
     start_time = time.time()
 
+    # Calculate the most popular trip (start station to end station)
     most_popular_trip = popular_trip(df)
     print(f"\nMost Popular Trip: Start Station - {most_popular_trip[0]}, End Station - {most_popular_trip[1]}")
 
@@ -204,35 +201,34 @@ def statistics():
     print("\nCalculating the next statistic...")
     start_time = time.time()
 
+    # Calculate user type counts
     user_types = users(df)
-    print(f'\nThere is {user_types.iloc[0]} Subscribers and {user_types.iloc[1]} Customers')
-    # TODO: call users function and print the results
+    print(f'\nThere are {user_types.iloc[0]} Subscribers and {user_types.iloc[1]} Customers')
 
     print("\nThat took %s seconds." % (time.time() - start_time))
     print("\nCalculating the next statistic...")
     start_time = time.time()
 
+    # If the city is not Washington, calculate gender and birth year statistics
     if city != 'washington':
 
-        modified_df = df.dropna(axis=0)
+        modified_df = df.dropna(axis=0)  # Remove rows with missing data
         
+        # Calculate gender counts
         genders = gender(modified_df)
-        print(f'\nThere is {genders.iloc[0]} Male Trips and {genders.iloc[1]} Females Trips')
-
+        print(f'\nThere are {genders.iloc[0]} Male Trips and {genders.iloc[1]} Female Trips')
 
         print("\nThat took %s seconds." % (time.time() - start_time))
         print("\nCalculating the next statistic...")
         start_time = time.time()
 
-        # What are the earliest (i.e. oldest user), most recent (i.e. youngest user), and
-        # most popular birth years?
-        # TODO: call birth_years function and print the results
+        # Calculate earliest, most recent, and most common birth years
         years = birth_years(modified_df)
-        print(f'\nThe oldes subscriber was born in {years[0]} and the youngest was born in {years[1]}.\nthe most popular birth year is {years[2]}')
+        print(f'\nThe oldest subscriber was born in {years[0]} and the youngest was born in {years[1]}.\nThe most popular birth year is {years[2]}')
 
         print("\nThat took %s seconds." % (time.time() - start_time))
     else:
-        print('\nSorry, There is no data available about the Gender and birth year for washington city')
+        print('\nSorry, there is no data available about gender and birth year for Washington city.')
 
     # Display five lines of data at a time if user specifies that they would like to
     start = 0
@@ -248,13 +244,13 @@ def statistics():
             else:
                 break
         except:
-            print('Ivalid input, Please try again')
+            print('Invalid input, please try again.')
 
     # Restart?
     restart = input('\nWould you like to restart? Type \'yes\' to restart or anything else for no.\n').lower()
-    if restart.lower() == 'yes':
+    if restart == 'yes':
         statistics()
 
-
+# Entry point of the script
 if __name__ == "__main__":
-	statistics()
+    statistics()
